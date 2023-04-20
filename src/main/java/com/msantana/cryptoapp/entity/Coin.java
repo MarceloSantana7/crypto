@@ -1,11 +1,11 @@
 package com.msantana.cryptoapp.entity;
 
 import java.math.BigDecimal;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 public class Coin {
-  private int id;
 
+  private int id;
   private String name;
   private BigDecimal price;
   private BigDecimal quantity;
