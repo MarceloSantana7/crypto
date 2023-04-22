@@ -1,3 +1,5 @@
+use crypto_db;
+
 CREATE TABLE coin
 (
   ID INTEGER PRIMARY KEY AUTO_INCREMENT,
