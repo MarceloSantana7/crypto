@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class CryptoApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(CryptoApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(CryptoApplication.class, args);
+	}
 
-    @GetMapping("/teste")
-    public String getTeste() {
-        return "Teste";
-    }
+	@GetMapping("/teste")
+	public String getTeste() {
+		return "Teste";
+	}
 }

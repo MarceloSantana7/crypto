@@ -3,23 +3,29 @@ package com.msantana.cryptoapp.dto;
 import java.math.BigDecimal;
 
 public class CoinTransationDTO {
-  private String name;
-  private BigDecimal quantity;
+	private String name;
+	private BigDecimal quantity;
+	
 
-  public String getName() {
-    return name;
-  }
+	public CoinTransationDTO(String name, BigDecimal quantity) {
+		this.name = name;
+		this.quantity = quantity;
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public BigDecimal getQuantity() {
-    return quantity;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  public void setQuantity(BigDecimal quantity) {
-    this.quantity = quantity;
-  }
+	public BigDecimal getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(BigDecimal quantity) {
+		this.quantity = quantity;
+	}
 
 }
