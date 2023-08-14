@@ -1,91 +1,63 @@
 package com.msantana.cryptoapp.repository;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.stereotype.Repository;
+
 import com.msantana.cryptoapp.dto.CoinTransationDTO;
 import com.msantana.cryptoapp.entity.Coin;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 
 @Repository
 @EnableAutoConfiguration
 public class CoinRepository {
 
-  private static String INSERT = "insert into coin (name, price, quantity, datetime) values (?,?,?,?)";
+	@Autowired
+	private EntityManager entityManager;
 
-  private static String SELECT_ALL = "select name, sum(quantity) as quantity from coin group by name";
+	@Transactional	
+	public Coin insert(Coin coin) {
+		entityManager.persist(coin);
+		return coin;
+	}
+	
+	@Transactional
+	public Coin update(Coin coin) {
+		entityManager.merge(coin);
+		return coin;
+	}
 
-  private static String SELECT_BY_NAME = "select * from coin where name = ?";
+	public List<CoinTransationDTO> getAll() {
+		String jpql = "select new com.msantana.cryptoapp.dto.CoinTransationDTO(c.name,sum(c.quantity)) from Coin c group by c.name";
+		TypedQuery<CoinTransationDTO> query = entityManager.createQuery(jpql, CoinTransationDTO.class);
+		return query.getResultList();
+	}
 
-  private static String DELETE = "delete from coin where id = ?";
+//	public List<Coin> getByName(String name) {
+//		Object[] attr = new Object[] { name };
+//		return jdbcTemplate.query(SELECT_BY_NAME, new RowMapper<Coin>() {
+//			@Override
+//			public Coin mapRow(ResultSet rs, int rowNum) throws SQLException {
+//				Coin coin = new Coin();
+//				coin.setId(rs.getInt("id"));
+//				coin.setName(rs.getString("name"));
+//				coin.setPrice(rs.getBigDecimal("price"));
+//				coin.setQuantity(rs.getBigDecimal("quantity"));
+//				coin.setDateTime(rs.getTimestamp("datetime"));
+//
+//				return coin;
+//			}
+//		}, attr);
+//	}
 
-  private static String UPDATE = "update coin set name = ?, price = ?, quantity = ? where id = ?";
-
-  private JdbcTemplate jdbcTemplate;
-
-  public CoinRepository(JdbcTemplate jdbcTemplate) {
-    this.jdbcTemplate = jdbcTemplate;
-  }
-
-  public Coin insert(Coin coin) {
-    Object[] attr = new Object[] {
-        coin.getName(),
-        coin.getPrice(),
-        coin.getQuantity(),
-        coin.getDateTime()
-    };
-    jdbcTemplate.update(INSERT, attr);
-    return coin;
-  }
-
-  public List<CoinTransationDTO> getAll() {
-    return jdbcTemplate.query(SELECT_ALL, new RowMapper<CoinTransationDTO>() {
-      @Override
-      public CoinTransationDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        CoinTransationDTO coin = new CoinTransationDTO();
-        coin.setName(rs.getString("name"));
-        coin.setQuantity(rs.getBigDecimal("quantity"));
-        return coin;
-      }
-    });
-  }
-
-  public List<Coin> getByName(String name) {
-    Object[] attr = new Object[] { name };
-    return jdbcTemplate.query(SELECT_BY_NAME, new RowMapper<Coin>() {
-      @Override
-      public Coin mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Coin coin = new Coin();
-        coin.setId(rs.getInt("id"));
-        coin.setName(rs.getString("name"));
-        coin.setPrice(rs.getBigDecimal("price"));
-        coin.setQuantity(rs.getBigDecimal("quantity"));
-        coin.setDateTime(rs.getTimestamp("datetime"));
-
-        return coin;
-      }
-    }, attr);
-  }
-
-  public int remove(int id) {
-    return jdbcTemplate.update(DELETE, id);
-  }
-
-  public Coin update(Coin coin) {
-    Object[] attr = new Object[] {
-        coin.getName(),
-        coin.getPrice(),
-        coin.getQuantity(),
-        coin.getId()
-    };
-
-    jdbcTemplate.update(UPDATE, attr);
-    return coin;
-  }
+//	public int remove(int id) {
+//		return jdbcTemplate.update(DELETE, id);
+//	}
+//
+	
 }
